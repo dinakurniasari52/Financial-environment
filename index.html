@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Class XI - Chapter 3: Financial Environment</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Fredoka for Pixar-like modern friendly aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti for Game/Quiz Victories -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['Fredoka', 'cursive'],
+                    },
+                    colors: {
+                        pixar: {
+                            blue: '#3B82F6',
+                            purple: '#8B5CF6',
+                            pink: '#EC4899',
+                            yellow: '#F59E0B',
+                            teal: '#14B8A6',
+                            emerald: '#10B981',
+                            orange: '#F97316',
+                            dark: '#0F172A',
+                        }
+                    },
+                    boxShadow: {
+                        'pixar-3d': '0 10px 0 0 rgba(0, 0, 0, 0.15), 0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+                        'pixar-btn': '0 6px 0 0 rgba(0, 0, 0, 0.2)',
+                        'pixar-btn-active': '0 2px 0 0 rgba(0, 0, 0, 0.2)',
+                        'glow-purple': '0 0 25px rgba(139, 92, 246, 0.4)',
+                        'glow-blue': '0 0 25px rgba(59, 130, 246, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        /* 3D Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 1.5rem;
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 1.5rem;
+            color: #0f172a;
+        }
+
+        /* Animated floating element */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+            animation: float 5s ease-in-out 1.5s infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8B5CF6;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A78BFA;
+        }
+
+        /* Pixar 3D Button Utility */
+        .btn-3d {
+            transition: all 0.1s ease;
+            transform: translateY(0);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2) !important;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-100 flex flex-col min-h-screen">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 px-4 py-3 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/60">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <!-- Brand & Subject Info -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30 font-display text-2xl font-bold border border-white/20">
+                    F
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-xl tracking-wide bg-gradient-to-r from-blue-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
+                        FINANCE XI SMA
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">Phase F • Chapter 3: Financial Environment</p>
+                </div>
+            </div>
+
+            <!-- Main Navigation Links -->
+            <nav class="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 w-full sm:w-auto">
+                <!-- BGM Control Toggle Button -->
+                <button onclick="toggleBGM()" id="bgm-toggle-btn" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all flex items-center gap-1.5 mr-2">
+                    <i data-lucide="music" class="w-4 h-4"></i> <span id="bgm-status-text">Music: OFF</span>
+                </button>
+
+                <button onclick="switchTab('guide')" id="nav-guide" class="nav-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    <i data-lucide="compass" class="w-4 h-4"></i> Guide
+                </button>
+                <button onclick="switchTab('objectives')" id="nav-objectives" class="nav-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    <i data-lucide="target" class="w-4 h-4"></i> Goals
+                </button>
+                <button onclick="switchTab('material')" id="nav-material" class="nav-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    <i data-lucide="book-open" class="w-4 h-4"></i> Material
+                </button>
+                <button onclick="switchTab('games')" id="nav-games" class="nav-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    <i data-lucide="gamepad-2" class="w-4 h-4"></i> 3 Games
+                </button>
+                <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i> Quiz
+                </button>
+                <button onclick="switchTab('developer')" id="nav-developer" class="nav-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    <i data-lucide="user" class="w-4 h-4"></i> Developer
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
+
+        <!-- ================= SECTION 1: USER GUIDE ================= -->
+        <section id="sec-guide" class="tab-content hidden space-y-6 animate-fadeIn">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl p-6 sm:p-10 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 shadow-2xl border border-white/20">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-pink-500/30 rounded-full blur-3xl"></div>
+                <div class="relative z-10 max-w-2xl space-y-3">
+                    <span class="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-white uppercase tracking-wider">
+                        👋 Welcome, Future Entrepreneur!
+                    </span>
+                    <h2 class="font-display text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+                        Interactive Learning Guide
+                    </h2>
+                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">
+                        Explore the business world of Indonesia in a fun, 3D Pixar-styled interactive experience! Follow this simple roadmap to maximize your learning.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Steps Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div class="glass-card p-6 rounded-3xl relative hover:border-blue-400/50 transition-all group">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-display text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                        1
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-2">Read Objectives & Material</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Understand the learning targets, then dive deep into State-Owned (BUMN) and Private-Owned (BUMS) companies in Indonesia.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card p-6 rounded-3xl relative hover:border-purple-400/50 transition-all group">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-display text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                        2
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-2">Play 3 Mini-Games</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Test your memory & analysis with Entity Classifier, Pros & Cons Sorting, and Business Matchmaker!
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card p-6 rounded-3xl relative hover:border-pink-400/50 transition-all group">
+                    <div class="w-14 h-14 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center font-display text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                        3
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-2">Complete the Quiz</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Answer 5 Multiple-Choice Questions (MCQ) to check your comprehension and earn your high score certificate.
+                    </p>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="text-center pt-4">
+                <button onclick="switchTab('objectives')" class="btn-3d px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 font-display font-bold text-lg text-white shadow-pixar-btn shadow-teal-900 hover:brightness-110">
+                    Let's Start Learning! 🚀
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 2: LEARNING OBJECTIVES ================= -->
+        <section id="sec-objectives" class="tab-content hidden space-y-6">
+            <div class="glass-card p-6 sm:p-10 rounded-3xl border border-indigo-500/30 relative overflow-hidden">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="p-4 rounded-2xl bg-indigo-500/20 text-indigo-400">
+                        <i data-lucide="target" class="w-10 h-10"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Curriculum Phase F • Senior High School Grade 11</span>
+                        <h2 class="font-display text-3xl font-extrabold text-white">Learning Objectives</h2>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-4">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400 shrink-0 mt-1"></i>
+                        <p class="text-base sm:text-lg text-slate-200 leading-relaxed">
+                            Students are able to <strong class="text-emerald-400">understand, analyze, and apply</strong> the concepts of <strong class="text-indigo-300">The Types of Companies in Indonesia</strong> from Chapter 3 (Financial Environment), including their specific characteristics, real-world examples, advantages, and disadvantages in the Indonesian economic ecosystem.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Competency Badges -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+                        <i data-lucide="building-2" class="w-8 h-8 text-blue-400 mx-auto mb-2"></i>
+                        <h4 class="font-bold text-white text-sm">Classify Entities</h4>
+                        <p class="text-xs text-slate-400 mt-1">Distinguish BUMN (Perum & Persero) vs BUMS (Firma, CV, PT, UD)</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+                        <i data-lucide="fingerprint" class="w-8 h-8 text-purple-400 mx-auto mb-2"></i>
+                        <h4 class="font-bold text-white text-sm">Identify Traits</h4>
+                        <p class="text-xs text-slate-400 mt-1">Recognize ownership, leadership, and legal liabilities</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+                        <i data-lucide="scale" class="w-8 h-8 text-pink-400 mx-auto mb-2"></i>
+                        <h4 class="font-bold text-white text-sm">Evaluate Pros & Cons</h4>
+                        <p class="text-xs text-slate-400 mt-1">Assess benefits & disadvantages of each firm structure</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+                        <i data-lucide="briefcase" class="w-8 h-8 text-amber-400 mx-auto mb-2"></i>
+                        <h4 class="font-bold text-white text-sm">Real-World Application</h4>
+                        <p class="text-xs text-slate-400 mt-1">Connect theories with Damri, Garuda, PT, CV, and Sole Proprietorships</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 3: MATERIAL (CHAPTER 3) ================= -->
+        <section id="sec-material" class="tab-content hidden space-y-6">
+            <!-- Header Banner -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-slate-800 via-indigo-950 to-slate-900 border border-indigo-500/30">
+                <div>
+                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Chapter 3: Financial Environment</span>
+                    <h2 class="font-display text-3xl font-extrabold text-white">Types of Companies in Indonesia</h2>
+                    <p class="text-slate-300 text-sm mt-1">Comprehensive breakdown based strictly on Chapter 3 module.</p>
+                </div>
+                <!-- Material Sub-tabs -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchMaterialCategory('bumn')" id="mcat-bumn" class="mcat-btn px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-md">
+                        1. State-Owned (BUMN)
+                    </button>
+                    <button onclick="switchMaterialCategory('bums')" id="mcat-bums" class="mcat-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">
+                        2. Private-Owned (BUMS)
+                    </button>
+                    <button onclick="switchMaterialCategory('comparison')" id="mcat-comparison" class="mcat-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">
+                        3. Regional Comparison
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT 1: BUMN -->
+            <div id="mcontent-bumn" class="mcontent space-y-6">
+                <div class="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-800/40 text-slate-300 text-sm">
+                    <p><strong>State-Owned Company (BUMN):</strong> A business entity whose capital is wholly or partly owned by the Indonesian government. There are two primary forms of BUMN: <strong>Perum</strong> and <strong>Persero</strong>.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Perum -->
+                    <div class="glass-card p-6 rounded-3xl border-l-8 border-l-blue-500 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display text-2xl font-bold text-blue-400">a. Public Company (Perum)</h3>
+                            <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold">BUMN</span>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">
+                            Oriented towards serving public interest while seeking profits. Capital is state-owned derived from loans. Led by directors, holds state facilities, and civil servant employees.
+                        </p>
+                        
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Key Characteristics</h4>
+                            <ul class="text-xs text-slate-200 space-y-1 list-disc list-inside">
+                                <li>Ultimate goal: Serve public interest + seek profit</li>
+                                <li>State-owned capital with proceeds derived from loans</li>
+                                <li>Led by directors; Has state facility</li>
+                                <li>Employees are state enterprise employees</li>
+                                <li>Moves on vital business; Has socioeconomic function</li>
+                                <li>Legal entity: can prosecute/be prosecuted under civil law</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-blue-950/60 border border-blue-800/50">
+                            <span class="text-xs font-bold text-blue-300">Example:</span>
+                            <p class="text-xs text-slate-200 font-semibold mt-0.5">Perum DAMRI (Public Transport Services)</p>
+                        </div>
+                    </div>
+
+                    <!-- Persero -->
+                    <div class="glass-card p-6 rounded-3xl border-l-8 border-l-purple-500 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display text-2xl font-bold text-purple-400">b. Liability Company (Persero)</h3>
+                            <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold">BUMN</span>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">
+                            Capital is in the form of stock (shares) partly or wholly owned by state assets. Main purpose is gain profit and provide public services. Shares are traded on stock exchanges.
+                        </p>
+
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Key Characteristics</h4>
+                            <ul class="text-xs text-slate-200 space-y-1 list-disc list-inside">
+                                <li>Main objective is commercial profit</li>
+                                <li>Capital derived partly/entirely from state wealth (stocks)</li>
+                                <li>Led by professional directors</li>
+                                <li>Employee status is private employee</li>
+                                <li>Business entity written as PT (Persero)</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-purple-950/60 border border-purple-800/50">
+                            <span class="text-xs font-bold text-purple-300">Examples:</span>
+                            <p class="text-xs text-slate-200 font-semibold mt-0.5">PT Garuda Indonesia (Persero) Tbk, PT Angkasa Pura (Persero)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT 2: BUMS -->
+            <div id="mcontent-bums" class="mcontent hidden space-y-6">
+                <div class="p-4 rounded-2xl bg-purple-950/40 border border-purple-800/40 text-slate-300 text-sm">
+                    <p><strong>Private Owned Company (BUMS):</strong> Established and financed by a person or group of private individuals. Consists of <strong>Firma (Fa)</strong>, <strong>Commanditaire Vennootschap (CV)</strong>, <strong>Limited Company (PT)</strong>, and <strong>Sole Proprietorship (UD)</strong>.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Firma -->
+                    <div class="glass-card p-6 rounded-3xl border-l-8 border-l-amber-500 space-y-3">
+                        <h3 class="font-display text-2xl font-bold text-amber-400">1. Firma (Fa)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Business entity established by 2 or more persons under a shared name. Executed via agreement deed before a notary.
+                        </p>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="p-2 rounded-lg bg-emerald-950/50 border border-emerald-800/40">
+                                <span class="font-bold text-emerald-400 block">Benefits:</span>
+                                • Easy to establish<br>
+                                • Greater financial capability<br>
+                                • Joint decision making<br>
+                                • Clear legal status<br>
+                                • Division of labor by expertise
+                            </div>
+                            <div class="p-2 rounded-lg bg-red-950/50 border border-red-800/40">
+                                <span class="font-bold text-red-400 block">Disadvantages:</span>
+                                • Unlimited debt liability for members<br>
+                                • Less reliable continuity (disbands if member leaves)<br>
+                                • Internal conflicts threaten survival
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CV -->
+                    <div class="glass-card p-6 rounded-3xl border-l-8 border-l-teal-500 space-y-3">
+                        <h3 class="font-display text-2xl font-bold text-teal-400">2. Commanditaire Vennootschap (CV)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Established by 2+ partners consisting of <strong>Active Partners</strong> (manage & run firm with full liability) and <strong>Silent Partners</strong> (provide capital only, limited liability).
+                        </p>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="p-2 rounded-lg bg-emerald-950/50 border border-emerald-800/40">
+                                <span class="font-bold text-emerald-400 block">Benefits:</span>
+                                • Easy to establish<br>
+                                • Amass large capital<br>
+                                • More credit & expansion opportunity<br>
+                                • Verified management
+                            </div>
+                            <div class="p-2 rounded-lg bg-red-950/50 border border-red-800/40">
+                                <span class="font-bold text-red-400 block">Disadvantages:</span>
+                                • Unlimited liability for general/active partners<br>
+                                • Less reliable survival<br>
+                                • Hard to pull back investment
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PT -->
+                    <div class="glass-card p-6 rounded-3xl border-l-8 border-l-pink-500 space-y-3">
+                        <h3 class="font-display text-2xl font-bold text-pink-400">3. Limited Company (PT)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Capital is divided into shares/stocks. Liability is strictly limited to capital invested. Includes <strong>Closed PT</strong> (family/private group) and <strong>Open PT</strong> (stocks sold to public/going public).
+                        </p>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="p-2 rounded-lg bg-emerald-950/50 border border-emerald-800/40">
+                                <span class="font-bold text-emerald-400 block">Benefits:</span>
+                                • Limited debt liability<br>
+                                • Company survival guaranteed<br>
+                                • Shares traded easily<br>
+                                • Easy to attract public capital
+                            </div>
+                            <div class="p-2 rounded-lg bg-red-950/50 border border-red-800/40">
+                                <span class="font-bold text-red-400 block">Disadvantages:</span>
+                                • High establishment cost<br>
+                                • Tax reports required<br>
+                                • Special permit needed to open
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sole Proprietorship / UD -->
+                    <div class="glass-card p-6 rounded-3xl border-l-8 border-l-orange-500 space-y-3">
+                        <h3 class="font-display text-2xl font-bold text-orange-400">4. Sole Proprietorship (UD)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Simplest business form requiring only 1 person. No legal difference between owner and business entity.
+                        </p>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="p-2 rounded-lg bg-emerald-950/50 border border-emerald-800/40">
+                                <span class="font-bold text-emerald-400 block">5 Advantages:</span>
+                                1. Less paperwork<br>
+                                2. Easier tax process<br>
+                                3. Fewer registration fees<br>
+                                4. Straightforward banking<br>
+                                5. Simplified ownership
+                            </div>
+                            <div class="p-2 rounded-lg bg-red-950/50 border border-red-800/40">
+                                <span class="font-bold text-red-400 block">3 Disadvantages:</span>
+                                1. No liability protection<br>
+                                2. Harder to get financing & business credit<br>
+                                3. Harder to sell business
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT 3: REGIONAL COMPARISON -->
+            <div id="mcontent-comparison" class="mcontent hidden space-y-4">
+                <div class="glass-card p-6 rounded-3xl space-y-4">
+                    <h3 class="font-display text-2xl font-bold text-white">Comparison with Singapore, Malaysia, & China</h3>
+                    <p class="text-xs text-slate-300">How Indonesian company structures correspond to regional counterparts mentioned in Chapter 3:</p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-slate-300">
+                            <thead class="text-xs uppercase bg-slate-900/80 text-indigo-400 border-b border-slate-700">
+                                <tr>
+                                    <th class="p-3">Country</th>
+                                    <th class="p-3">Local Term</th>
+                                    <th class="p-3">Indonesian Equivalent</th>
+                                    <th class="p-3">Real Examples</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr class="hover:bg-slate-800/40">
+                                    <td class="p-3 font-bold text-white">🇸🇬 Singapore</td>
+                                    <td class="p-3">Pte Ltd / Ltd</td>
+                                    <td class="p-3">PT (Perseroan Terbatas)</td>
+                                    <td class="p-3">Singapore Airlines Ltd, Grab Holdings Pte Ltd, Shopee Singapore Pte Ltd</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/40">
+                                    <td class="p-3 font-bold text-white">🇲🇾 Malaysia</td>
+                                    <td class="p-3">Sdn. Bhd. / Bhd.</td>
+                                    <td class="p-3">PT Tertutup / PT Terbuka</td>
+                                    <td class="p-3">Petronas Berhad, Maybank Berhad, AirAsia Sdn. Bhd.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/40">
+                                    <td class="p-3 font-bold text-white">🇨🇳 China</td>
+                                    <td class="p-3">有限公司 (You Xian Gong Si)</td>
+                                    <td class="p-3">PT (Limited Liability Company)</td>
+                                    <td class="p-3">Huawei Technologies Co., Ltd., Alibaba Group Holding Ltd, Tencent Holdings Ltd</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 4: 3 INTERACTIVE GAMES ================= -->
+        <section id="sec-games" class="tab-content hidden space-y-6">
+            <!-- Game Selector Header -->
+            <div class="p-6 rounded-3xl bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 border border-purple-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold text-pink-400 uppercase tracking-widest">Interactive Practice</span>
+                    <h2 class="font-display text-3xl font-extrabold text-white">3 Chapter Arcade Games</h2>
+                    <p class="text-slate-300 text-sm">Reinforce your knowledge through quick, visual challenges!</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchGame(1)" id="gbtn-1" class="gselect-btn px-4 py-2 rounded-xl text-xs font-bold bg-pink-500 text-white shadow-lg">
+                        Game 1: Entity Classifier
+                    </button>
+                    <button onclick="switchGame(2)" id="gbtn-2" class="gselect-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">
+                        Game 2: Pros & Cons Sorting
+                    </button>
+                    <button onclick="switchGame(3)" id="gbtn-3" class="gselect-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">
+                        Game 3: Company Matchmaker
+                    </button>
+                </div>
+            </div>
+
+            <!-- GAME 1 CONTAINER: ENTITY CLASSIFIER -->
+            <div id="game-1-box" class="game-box glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-700/60 pb-4">
+                    <div>
+                        <h3 class="font-display text-2xl font-bold text-white">Game 1: Business Entity Classifier</h3>
+                        <p class="text-xs text-slate-300">Click the correct target bucket (BUMN vs BUMS) for each company feature or example!</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Score</span>
+                        <span id="g1-score" class="font-display text-2xl font-bold text-emerald-400">0 / 5</span>
+                    </div>
+                </div>
+
+                <div id="g1-card-container" class="p-8 rounded-2xl bg-slate-900/90 border border-slate-700 text-center space-y-6">
+                    <div class="inline-block px-4 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold">
+                        Question <span id="g1-qnum">1</span> of 5
+                    </div>
+                    <h4 id="g1-prompt" class="font-display text-xl sm:text-2xl text-white font-semibold">
+                        "PT Garuda Indonesia (Persero) & PT Angkasa Pura"
+                    </h4>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-4">
+                        <button onclick="checkGame1Answer('BUMN')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-blue-900 hover:brightness-110">
+                            🏛️ State-Owned (BUMN)
+                        </button>
+                        <button onclick="checkGame1Answer('BUMS')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-purple-900 hover:brightness-110">
+                            🏢 Private-Owned (BUMS)
+                        </button>
+                    </div>
+                </div>
+                <p id="g1-feedback" class="text-center font-bold text-sm min-h-[24px]"></p>
+            </div>
+
+            <!-- GAME 2 CONTAINER: PROS & CONS SORTING -->
+            <div id="game-2-box" class="game-box hidden glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-700/60 pb-4">
+                    <div>
+                        <h3 class="font-display text-2xl font-bold text-white">Game 2: Pros vs Cons Sorting Challenge</h3>
+                        <p class="text-xs text-slate-300">Is this statement an Advantage (Benefit) or a Disadvantage of the firm?</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Score</span>
+                        <span id="g2-score" class="font-display text-2xl font-bold text-emerald-400">0 / 5</span>
+                    </div>
+                </div>
+
+                <div id="g2-card-container" class="p-8 rounded-2xl bg-slate-900/90 border border-slate-700 text-center space-y-6">
+                    <div class="inline-block px-4 py-1 rounded-full bg-pink-500/20 text-pink-300 text-xs font-bold">
+                        Card <span id="g2-qnum">1</span> of 5
+                    </div>
+                    <h4 id="g2-prompt" class="font-display text-xl sm:text-2xl text-white font-semibold">
+                        "Unlimited debt liability for general/active partners."
+                    </h4>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-4">
+                        <button onclick="checkGame2Answer('Advantage')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-emerald-900 hover:brightness-110">
+                            ✅ Advantage (Benefit)
+                        </button>
+                        <button onclick="checkGame2Answer('Disadvantage')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-red-900 hover:brightness-110">
+                            ❌ Disadvantage
+                        </button>
+                    </div>
+                </div>
+                <p id="g2-feedback" class="text-center font-bold text-sm min-h-[24px]"></p>
+            </div>
+
+            <!-- GAME 3 CONTAINER: COMPANY MATCHMAKER -->
+            <div id="game-3-box" class="game-box hidden glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-700/60 pb-4">
+                    <div>
+                        <h3 class="font-display text-2xl font-bold text-white">Game 3: Company Matchmaker</h3>
+                        <p class="text-xs text-slate-300">Match the real scenario to the precise company form!</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Score</span>
+                        <span id="g3-score" class="font-display text-2xl font-bold text-emerald-400">0 / 4</span>
+                    </div>
+                </div>
+
+                <div id="g3-card-container" class="p-6 rounded-2xl bg-slate-900/90 border border-slate-700 space-y-6">
+                    <div class="text-center">
+                        <span class="inline-block px-4 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold">
+                            Scenario <span id="g3-qnum">1</span> of 4
+                        </span>
+                        <h4 id="g3-prompt" class="font-display text-lg sm:text-xl text-white font-semibold mt-3">
+                            "Andi wants to start a small laundry shop alone with minimal paperwork and total control."
+                        </h4>
+                    </div>
+
+                    <div id="g3-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+                <p id="g3-feedback" class="text-center font-bold text-sm min-h-[24px]"></p>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 5: QUIZ (5 MCQ) ================= -->
+        <section id="sec-quiz" class="tab-content hidden space-y-6">
+            <div class="glass-card p-6 sm:p-8 rounded-3xl border border-blue-500/30 space-y-6">
+                <!-- Quiz Header -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                    <div>
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Assessment Mode</span>
+                        <h2 class="font-display text-3xl font-extrabold text-white">Chapter 3 Mastery Quiz</h2>
+                        <p class="text-xs text-slate-300">5 Multiple-Choice Questions based strictly on Chapter 3 module.</p>
+                    </div>
+                    <div id="quiz-status-pill" class="px-4 py-2 rounded-2xl bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300">
+                        Status: Ready
+                    </div>
+                </div>
+
+                <!-- Quiz Questions Form -->
+                <div id="quiz-container" class="space-y-8">
+                    <!-- Q1 -->
+                    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm">1</span>
+                            <h3 class="font-display text-base sm:text-lg font-semibold text-white">
+                                Which BUMN entity is not solely oriented toward public service but focuses on profit, and has examples like Perum Damri?
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-11">
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q1" value="A" class="accent-blue-500">
+                                <span>A. Persero</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q1" value="B" class="accent-blue-500">
+                                <span>B. Public Company (Perum)</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q1" value="C" class="accent-blue-500">
+                                <span>C. Firma (Fa)</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q1" value="D" class="accent-blue-500">
+                                <span>D. Commanditaire Vennootschap (CV)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">2</span>
+                            <h3 class="font-display text-base sm:text-lg font-semibold text-white">
+                                In a Commanditaire Vennootschap (CV), what is the key difference between an Active Partner and a Silent Partner?
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-11">
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q2" value="A" class="accent-purple-500">
+                                <span>A. Active partners only provide capital; silent partners run the business.</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q2" value="B" class="accent-purple-500">
+                                <span>B. Active partners run business & have full liability; Silent partners provide capital with limited liability.</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q2" value="C" class="accent-purple-500">
+                                <span>C. Silent partners are civil servants appointed by the government.</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q2" value="D" class="accent-purple-500">
+                                <span>D. Both partners have equal unlimited liabilities for all company debts.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center font-bold text-sm">3</span>
+                            <h3 class="font-display text-base sm:text-lg font-semibold text-white">
+                                What is a major advantage of a Limited Company (PT) compared to a Sole Proprietorship (UD)?
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-11">
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q3" value="A" class="accent-pink-500">
+                                <span>A. Zero establishment cost and zero taxes.</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q3" value="B" class="accent-pink-500">
+                                <span>B. Limitation of liability for company debts and guaranteed company survival.</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q3" value="C" class="accent-pink-500">
+                                <span>C. No need for any legal permits or registration fees.</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q3" value="D" class="accent-pink-500">
+                                <span>D. The owner is solely responsible with personal property.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">4</span>
+                            <h3 class="font-display text-base sm:text-lg font-semibold text-white">
+                                Which company type in Malaysia is equivalent to an Open / Public PT (PT Terbuka) in Indonesia?
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-11">
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q4" value="A" class="accent-emerald-500">
+                                <span>A. Pte Ltd</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q4" value="B" class="accent-emerald-500">
+                                <span>B. Berhad (Bhd.)</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q4" value="C" class="accent-emerald-500">
+                                <span>C. Sdn. Bhd.</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q4" value="D" class="accent-emerald-500">
+                                <span>D. 有限公司 (You Xian Gong Si)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">5</span>
+                            <h3 class="font-display text-base sm:text-lg font-semibold text-white">
+                                All of the following are advantages of a Sole Proprietorship (UD), EXCEPT:
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-11">
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q5" value="A" class="accent-amber-500">
+                                <span>A. Less paperwork to get started</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q5" value="B" class="accent-amber-500">
+                                <span>B. Easier processes for business taxes</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q5" value="C" class="accent-amber-500">
+                                <span>C. Strong liability protection for personal assets</span>
+                            </label>
+                            <label class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 cursor-pointer border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm">
+                                <input type="radio" name="q5" value="D" class="accent-amber-500">
+                                <span>D. Simplified business ownership</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center pt-4">
+                        <button onclick="submitQuiz()" class="btn-3d px-10 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 font-display font-bold text-lg text-white shadow-pixar-btn shadow-indigo-900 hover:brightness-110">
+                            Submit Quiz Answers 📝
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Result Scorecard (Hidden until submit) -->
+                <div id="quiz-result" class="hidden p-8 rounded-3xl bg-slate-900/90 border border-indigo-500 text-center space-y-4">
+                    <div class="w-20 h-20 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-4xl">
+                        🏆
+                    </div>
+                    <h3 class="font-display text-3xl font-extrabold text-white">Quiz Completed!</h3>
+                    <p class="text-slate-300 text-sm">Your Final Score:</p>
+                    <div id="quiz-score-display" class="font-display text-5xl font-black text-emerald-400">
+                        100 / 100
+                    </div>
+                    <p id="quiz-feedback-text" class="text-slate-300 text-sm max-w-md mx-auto">
+                        Excellent performance! You have mastered the Types of Companies in Indonesia.
+                    </p>
+                    <button onclick="resetQuiz()" class="btn-3d px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm">
+                        Try Again 🔄
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 6: DEVELOPER PROFILE ================= -->
+        <section id="sec-developer" class="tab-content hidden space-y-6">
+            <div class="glass-card p-6 sm:p-10 rounded-3xl border border-pink-500/30 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <!-- Photo Container with SVG Fallback Render -->
+                    <div class="relative group shrink-0">
+                        <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 p-1 shadow-glow-purple">
+                            <div class="w-full h-full rounded-[22px] bg-slate-900 overflow-hidden relative flex items-center justify-center">
+                                <!-- Developer Photo Render -->
+                                <img src="ba6d7528-b97c-4027-b7d2-20454e4c832b-1_all_1059.jpg" 
+                                     alt="Dina Kurniasari, S.Pd" 
+                                     class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-300"
+                                     onerror="this.onerror=null; this.style.display='none'; document.getElementById('dev-svg-avatar').classList.remove('hidden');">
+                                
+                                <!-- High Quality Visual Avatar Fallback -->
+                                <div id="dev-svg-avatar" class="hidden w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-100 to-amber-200 text-slate-800 p-4 text-center">
+                                    <svg class="w-24 h-24 text-amber-800" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                                    </svg>
+                                    <span class="font-bold text-xs mt-1 text-slate-900">Dina Kurniasari, S.Pd</span>
+                                    <span class="text-[10px] text-slate-700">Economics Teacher</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="absolute -bottom-2 -right-2 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs shadow-lg">
+                            Educator ✨
+                        </span>
+                    </div>
+
+                    <!-- Developer Specs -->
+                    <div class="space-y-4 text-center md:text-left flex-1">
+                        <div>
+                            <span class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 text-xs font-bold uppercase tracking-wider">
+                                MPI Creator & Educator
+                            </span>
+                            <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mt-2">
+                                Dina Kurniasari, S.Pd
+                            </h2>
+                            <p class="text-indigo-300 font-semibold text-base mt-1">
+                                Economics Teacher
+                            </p>
+                            <p class="text-slate-400 text-sm">
+                                SMAS Daar El Qolam 2
+                            </p>
+                        </div>
+
+                        <p class="text-slate-300 text-sm leading-relaxed max-w-xl">
+                            Dedicated Economics Educator passionate about creating interactive, student-centered digital learning media (MPI) that blend modern tech aesthetic with rigorous national curriculum standards for Senior High School (SMA Kelas 11 Fase F).
+                        </p>
+
+                        <!-- Highlights -->
+                        <div class="pt-2 flex flex-wrap gap-2 justify-center md:justify-start">
+                            <span class="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-300 font-medium">
+                                📚 Senior High Economics Specialist
+                            </span>
+                            <span class="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-300 font-medium">
+                                💻 Interactive Website Developer
+                            </span>
+                            <span class="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-300 font-medium">
+                                🏫 SMAS Daar El Qolam 2
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto py-6 px-4 bg-slate-950/80 border-t border-slate-800 text-center text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>© Interactive Learning Media (MPI) • Finance Class XI SMA (Fase F)</p>
+            <p class="text-slate-400">Designed by <strong class="text-indigo-400">Dina Kurniasari, S.Pd</strong> (SMAS Daar El Qolam 2)</p>
+        </div>
+    </footer>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // ---------------- WEB AUDIO API SOUND SYSTEM ----------------
+        let audioCtx = null;
+        let isBgmPlaying = false;
+        let bgmInterval = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Correct Answer Sound Effect (Cheerful Melodic Chime)
+        function playCorrectSFX() {
+            initAudio();
+            const now = audioCtx.currentTime;
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+
+            notes.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+                gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 0.25);
+            });
+        }
+
+        // Victory Cheer Sound Effect ("HOREEE / YEEAAYYY!" Triumph Fanfare)
+        function playVictoryCheerSFX() {
+            initAudio();
+            const now = audioCtx.currentTime;
+            
+            // Arpeggio Fanfare Sequence simulating a joyful cheer chime
+            const cheerNotes = [
+                { f: 523.25, t: 0.00, d: 0.15 }, // C5
+                { f: 659.25, t: 0.10, d: 0.15 }, // E5
+                { f: 783.99, t: 0.20, d: 0.15 }, // G5
+                { f: 1046.50, t: 0.30, d: 0.40 }, // C6
+                { f: 880.00, t: 0.45, d: 0.15 },  // A5
+                { f: 1046.50, t: 0.55, d: 0.60 }, // C6 (sustained celebration)
+                { f: 1318.51, t: 0.55, d: 0.60 }  // E6 chord swell
+            ];
+
+            cheerNotes.forEach(note => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(note.f, now + note.t);
+
+                gain.gain.setValueAtTime(0.35, now + note.t);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now + note.t);
+                osc.stop(now + note.t + note.d);
+            });
+        }
+
+        // Wrong Answer Sound Effect (Low Buzzing Tone)
+        function playWrongSFX() {
+            initAudio();
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(160, now);
+            osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.3);
+        }
+
+        // Upbeat, Vibrant & Loud Synthesized Game Backsound
+        function playBgmSynthNote(freq, type, duration, delay, volume) {
+            if (!isBgmPlaying || !audioCtx) return;
+            const now = audioCtx.currentTime + delay;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, now);
+
+            gain.gain.setValueAtTime(volume, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + duration);
+        }
+
+        function playBgmMelody() {
+            // Lively Lead Melody (Square Wave for Pixar-game arcade vibe)
+            const leadSeq = [
+                { f: 523.25, d: 0.15, t: 0.00 }, // C5
+                { f: 659.25, d: 0.15, t: 0.18 }, // E5
+                { f: 783.99, d: 0.15, t: 0.36 }, // G5
+                { f: 880.00, d: 0.20, t: 0.54 }, // A5
+                { f: 783.99, d: 0.15, t: 0.78 }, // G5
+                { f: 659.25, d: 0.20, t: 0.96 }, // E5
+
+                { f: 587.33, d: 0.15, t: 1.20 }, // D5
+                { f: 698.46, d: 0.15, t: 1.38 }, // F5
+                { f: 880.00, d: 0.15, t: 1.56 }, // A5
+                { f: 987.77, d: 0.20, t: 1.74 }, // B5
+                { f: 880.00, d: 0.15, t: 1.98 }, // A5
+                { f: 698.46, d: 0.20, t: 2.16 }  // F5
+            ];
+
+            // Rhythmic Bass Pulse
+            const bassSeq = [
+                { f: 130.81, d: 0.25, t: 0.00 }, // C3
+                { f: 130.81, d: 0.20, t: 0.36 }, // C3
+                { f: 174.61, d: 0.25, t: 0.78 }, // F3
+                { f: 196.00, d: 0.25, t: 1.20 }, // G3
+                { f: 196.00, d: 0.20, t: 1.56 }, // G3
+                { f: 130.81, d: 0.25, t: 1.98 }  // C3
+            ];
+
+            leadSeq.forEach(n => playBgmSynthNote(n.f, 'square', n.d, n.t, 0.08));
+            bassSeq.forEach(n => playBgmSynthNote(n.f, 'triangle', n.d, n.t, 0.15));
+        }
+
+        function toggleBGM() {
+            initAudio();
+            isBgmPlaying = !isBgmPlaying;
+            const btnText = document.getElementById('bgm-status-text');
+            const btn = document.getElementById('bgm-toggle-btn');
+
+            if (isBgmPlaying) {
+                btnText.innerText = "Music: ON";
+                btn.classList.remove('bg-amber-500/20', 'text-amber-300');
+                btn.classList.add('bg-emerald-500/30', 'text-emerald-300', 'border-emerald-400');
+                playBgmMelody();
+                bgmInterval = setInterval(playBgmMelody, 2400);
+            } else {
+                btnText.innerText = "Music: OFF";
+                btn.classList.remove('bg-emerald-500/30', 'text-emerald-300', 'border-emerald-400');
+                btn.classList.add('bg-amber-500/20', 'text-amber-300');
+                if (bgmInterval) clearInterval(bgmInterval);
+            }
+        }
+
+        // ---------------- TAB SWITCHING SYSTEM ----------------
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Remove active classes from nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+
+            // Show selected tab
+            const targetSection = document.getElementById('sec-' + tabId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            // Highlight nav button
+            const targetNav = document.getElementById('nav-' + tabId);
+            if (targetNav) {
+                targetNav.classList.remove('bg-slate-800', 'text-slate-300');
+                targetNav.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+            }
+        }
+
+        // ---------------- MATERIAL CATEGORY SWITCHER ----------------
+        function switchMaterialCategory(catId) {
+            document.querySelectorAll('.mcontent').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.mcat-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+
+            document.getElementById('mcontent-' + catId).classList.remove('hidden');
+            const activeBtn = document.getElementById('mcat-' + catId);
+            activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+            activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+        }
+
+        // ---------------- GAME SWITCHER ----------------
+        function switchGame(gameNum) {
+            document.querySelectorAll('.game-box').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.gselect-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+
+            document.getElementById('game-' + gameNum + '-box').classList.remove('hidden');
+            const activeBtn = document.getElementById('gbtn-' + gameNum);
+            activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+            activeBtn.classList.add('bg-pink-500', 'text-white', 'shadow-lg');
+        }
+
+        // ================= GAME 1 DATA & LOGIC =================
+        const game1Data = [
+            { prompt: '"PT Garuda Indonesia (Persero) & PT Angkasa Pura"', answer: 'BUMN' },
+            { prompt: '"Firma (Fa) established by 2 or more people using a shared name"', answer: 'BUMS' },
+            { prompt: '"Perum DAMRI providing public transportation services"', answer: 'BUMN' },
+            { prompt: '"Sole Proprietorship (UD) owned by single individual"', answer: 'BUMS' },
+            { prompt: '"Commanditaire Vennootschap (CV) with general & silent partners"', answer: 'BUMS' }
+        ];
+        let g1Idx = 0;
+        let g1Score = 0;
+
+        function checkGame1Answer(userChoice) {
+            const current = game1Data[g1Idx];
+            const feedback = document.getElementById('g1-feedback');
+
+            if (userChoice === current.answer) {
+                g1Score++;
+                playCorrectSFX();
+                feedback.className = "text-center font-bold text-sm text-emerald-400";
+                feedback.innerText = "✨ Correct! " + current.prompt + " is " + current.answer;
+            } else {
+                playWrongSFX();
+                feedback.className = "text-center font-bold text-sm text-rose-400";
+                feedback.innerText = "❌ Oops! Incorrect. It belongs to " + current.answer;
+            }
+
+            document.getElementById('g1-score').innerText = g1Score + " / 5";
+
+            g1Idx++;
+            if (g1Idx < game1Data.length) {
+                setTimeout(() => {
+                    document.getElementById('g1-qnum').innerText = g1Idx + 1;
+                    document.getElementById('g1-prompt').innerText = game1Data[g1Idx].prompt;
+                    feedback.innerText = "";
+                }, 1200);
+            } else {
+                setTimeout(() => {
+                    playVictoryCheerSFX();
+                    document.getElementById('g1-card-container').innerHTML = `
+                        <div class="py-6 text-center space-y-3">
+                            <span class="text-5xl animate-bounce inline-block">🎉</span>
+                            <h4 class="font-display text-2xl font-bold text-white">YEEAAYYY! Game 1 Completed! 🙌</h4>
+                            <p class="text-emerald-300 font-bold text-sm">Horeee! Great job on classifying business entities!</p>
+                            <p class="text-slate-300 text-sm">Final Score: ${g1Score} / 5</p>
+                            <button onclick="resetGame1()" class="btn-3d px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs">Play Again 🔄</button>
+                        </div>
+                    `;
+                    confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+                }, 1200);
+            }
+        }
+
+        function resetGame1() {
+            g1Idx = 0;
+            g1Score = 0;
+            document.getElementById('g1-score').innerText = "0 / 5";
+            document.getElementById('g1-feedback').innerText = "";
+            document.getElementById('g1-card-container').innerHTML = `
+                <div class="inline-block px-4 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold">
+                    Question <span id="g1-qnum">1</span> of 5
+                </div>
+                <h4 id="g1-prompt" class="font-display text-xl sm:text-2xl text-white font-semibold">
+                    "${game1Data[0].prompt}"
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-4">
+                    <button onclick="checkGame1Answer('BUMN')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-blue-900 hover:brightness-110">
+                        🏛️ State-Owned (BUMN)
+                    </button>
+                    <button onclick="checkGame1Answer('BUMS')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-purple-900 hover:brightness-110">
+                        🏢 Private-Owned (BUMS)
+                    </button>
+                </div>
+            `;
+        }
+
+
+        // ================= GAME 2 DATA & LOGIC =================
+        const game2Data = [
+            { prompt: '"Limitation of liability for company debts in PT"', answer: 'Advantage' },
+            { prompt: '"Unlimited debt liability for general partners in CV"', answer: 'Disadvantage' },
+            { prompt: '"Fewer registration fees & simplified business ownership in UD"', answer: 'Advantage' },
+            { prompt: '"Relatively high establishment cost and mandatory tax reports for PT"', answer: 'Disadvantage' },
+            { prompt: '"Greater financial capability and joint decision making in Firma"', answer: 'Advantage' }
+        ];
+        let g2Idx = 0;
+        let g2Score = 0;
+
+        function checkGame2Answer(userChoice) {
+            const current = game2Data[g2Idx];
+            const feedback = document.getElementById('g2-feedback');
+
+            if (userChoice === current.answer) {
+                g2Score++;
+                playCorrectSFX();
+                feedback.className = "text-center font-bold text-sm text-emerald-400";
+                feedback.innerText = "✨ Correct! This is an " + current.answer + ".";
+            } else {
+                playWrongSFX();
+                feedback.className = "text-center font-bold text-sm text-rose-400";
+                feedback.innerText = "❌ Incorrect. It is actually a " + current.answer + ".";
+            }
+
+            document.getElementById('g2-score').innerText = g2Score + " / 5";
+
+            g2Idx++;
+            if (g2Idx < game2Data.length) {
+                setTimeout(() => {
+                    document.getElementById('g2-qnum').innerText = g2Idx + 1;
+                    document.getElementById('g2-prompt').innerText = game2Data[g2Idx].prompt;
+                    feedback.innerText = "";
+                }, 1200);
+            } else {
+                setTimeout(() => {
+                    playVictoryCheerSFX();
+                    document.getElementById('g2-card-container').innerHTML = `
+                        <div class="py-6 text-center space-y-3">
+                            <span class="text-5xl animate-bounce inline-block">🌟</span>
+                            <h4 class="font-display text-2xl font-bold text-white">HOREEE! Game 2 Completed! 🥳</h4>
+                            <p class="text-pink-300 font-bold text-sm">Yeeaayyy! You sorted the pros & cons like a boss!</p>
+                            <p class="text-slate-300 text-sm">Final Score: ${g2Score} / 5</p>
+                            <button onclick="resetGame2()" class="btn-3d px-6 py-2.5 rounded-xl bg-pink-600 text-white font-bold text-xs">Play Again 🔄</button>
+                        </div>
+                    `;
+                    confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+                }, 1200);
+            }
+        }
+
+        function resetGame2() {
+            g2Idx = 0;
+            g2Score = 0;
+            document.getElementById('g2-score').innerText = "0 / 5";
+            document.getElementById('g2-feedback').innerText = "";
+            document.getElementById('g2-card-container').innerHTML = `
+                <div class="inline-block px-4 py-1 rounded-full bg-pink-500/20 text-pink-300 text-xs font-bold">
+                    Card <span id="g2-qnum">1</span> of 5
+                </div>
+                <h4 id="g2-prompt" class="font-display text-xl sm:text-2xl text-white font-semibold">
+                    "${game2Data[0].prompt}"
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-4">
+                    <button onclick="checkGame2Answer('Advantage')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-emerald-900 hover:brightness-110">
+                        ✅ Advantage (Benefit)
+                    </button>
+                    <button onclick="checkGame2Answer('Disadvantage')" class="btn-3d p-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 text-white font-display font-bold text-lg shadow-pixar-btn shadow-red-900 hover:brightness-110">
+                        ❌ Disadvantage
+                    </button>
+                </div>
+            `;
+        }
+
+
+        // ================= GAME 3 DATA & LOGIC =================
+        const game3Data = [
+            {
+                scenario: "Andi wants to start a small laundry shop alone with minimal paperwork and simplified business ownership.",
+                options: ["Sole Proprietorship (UD)", "Perum", "Closed PT", "Firma"],
+                correct: "Sole Proprietorship (UD)"
+            },
+            {
+                scenario: "Budi and Siti want to run an accounting consultant firm using a shared name with equal joint decisions.",
+                options: ["CV", "Firma (Fa)", "Persero", "Sole Proprietorship"],
+                correct: "Firma (Fa)"
+            },
+            {
+                scenario: "A large tech firm in Indonesia wants to raise public capital by issuing shares on the stock exchange.",
+                options: ["Closed PT", "Open PT (Going Public)", "Perum", "UD"],
+                correct: "Open PT (Going Public)"
+            },
+            {
+                scenario: "An investor wants to provide capital to a friend's culinary business without taking part in daily operations.",
+                options: ["Active Partner in Firma", "Silent Partner in CV", "Director in Perum", "Sole Proprietor"],
+                correct: "Silent Partner in CV"
+            }
+        ];
+        let g3Idx = 0;
+        let g3Score = 0;
+
+        function renderGame3Scenario() {
+            const current = game3Data[g3Idx];
+            document.getElementById('g3-qnum').innerText = g3Idx + 1;
+            document.getElementById('g3-prompt').innerText = `"${current.scenario}"`;
+
+            const optsDiv = document.getElementById('g3-options');
+            optsDiv.innerHTML = '';
+
+            current.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-3d p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm border border-slate-700 text-left';
+                btn.innerText = opt;
+                btn.onclick = () => checkGame3Answer(opt);
+                optsDiv.appendChild(btn);
+            });
+        }
+
+        function checkGame3Answer(userChoice) {
+            const current = game3Data[g3Idx];
+            const feedback = document.getElementById('g3-feedback');
+
+            if (userChoice === current.correct) {
+                g3Score++;
+                playCorrectSFX();
+                feedback.className = "text-center font-bold text-sm text-emerald-400";
+                feedback.innerText = "✨ Excellent Match! " + userChoice + " is correct.";
+            } else {
+                playWrongSFX();
+                feedback.className = "text-center font-bold text-sm text-rose-400";
+                feedback.innerText = "❌ Incorrect. The correct match is " + current.correct;
+            }
+
+            document.getElementById('g3-score').innerText = g3Score + " / 4";
+
+            g3Idx++;
+            if (g3Idx < game3Data.length) {
+                setTimeout(() => {
+                    feedback.innerText = "";
+                    renderGame3Scenario();
+                }, 1200);
+            } else {
+                setTimeout(() => {
+                    playVictoryCheerSFX();
+                    document.getElementById('g3-card-container').innerHTML = `
+                        <div class="py-6 text-center space-y-3">
+                            <span class="text-5xl animate-bounce inline-block">🎯</span>
+                            <h4 class="font-display text-2xl font-bold text-white">YEEAAYYY! Game 3 Completed! 👏</h4>
+                            <p class="text-amber-300 font-bold text-sm">Horeee! Fantastic matchmaking skills!</p>
+                            <p class="text-slate-300 text-sm">Final Score: ${g3Score} / 4</p>
+                            <button onclick="resetGame3()" class="btn-3d px-6 py-2.5 rounded-xl bg-amber-600 text-white font-bold text-xs">Play Again 🔄</button>
+                        </div>
+                    `;
+                    confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+                }, 1200);
+            }
+        }
+
+        function resetGame3() {
+            g3Idx = 0;
+            g3Score = 0;
+            document.getElementById('g3-score').innerText = "0 / 4";
+            document.getElementById('g3-feedback').innerText = "";
+            document.getElementById('g3-card-container').innerHTML = `
+                <div class="text-center">
+                    <span class="inline-block px-4 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold">
+                        Scenario <span id="g3-qnum">1</span> of 4
+                    </span>
+                    <h4 id="g3-prompt" class="font-display text-lg sm:text-xl text-white font-semibold mt-3">
+                        "${game3Data[0].scenario}"
+                    </h4>
+                </div>
+                <div id="g3-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto"></div>
+            `;
+            renderGame3Scenario();
+        }
+
+        // Initialize Game 3 on Load
+        renderGame3Scenario();
+
+
+        // ================= QUIZ LOGIC =================
+        const quizAnswers = {
+            q1: "B", // Public Company (Perum)
+            q2: "B", // Active runs & full liability, Silent provides capital & limited
+            q3: "B", // Limitation of liability & guaranteed survival
+            q4: "B", // Berhad (Bhd.)
+            q5: "C"  // Strong liability protection is NOT an advantage of UD
+        };
+
+        function submitQuiz() {
+            let correctCount = 0;
+            const totalQuestions = 5;
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected && selected.value === quizAnswers[`q${i}`]) {
+                    correctCount++;
+                }
+            }
+
+            const finalScore = (correctCount / totalQuestions) * 100;
+
+            if (finalScore >= 60) {
+                playVictoryCheerSFX();
+            } else {
+                playWrongSFX();
+            }
+
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+
+            const scoreDisplay = document.getElementById('quiz-score-display');
+            scoreDisplay.innerText = finalScore + " / 100";
+
+            const statusPill = document.getElementById('quiz-status-pill');
+            statusPill.className = "px-4 py-2 rounded-2xl bg-emerald-500/20 border border-emerald-500 text-xs font-bold text-emerald-300";
+            statusPill.innerText = "Status: Completed (" + finalScore + "%)";
+
+            const feedbackText = document.getElementById('quiz-feedback-text');
+            if (finalScore >= 80) {
+                feedbackText.innerText = "🙌 HOREEE / YEEAAYYY! Outstanding performance! You have mastered Chapter 3: Types of Companies in Indonesia!";
+                confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+            } else if (finalScore >= 60) {
+                feedbackText.innerText = "🎉 Yeeaayyy! Good effort! Review the material tab once more to reach 100%!";
+            } else {
+                feedbackText.innerText = "Keep practicing! Reread the material on BUMN and BUMS and try again.";
+            }
+        }
+
+        function resetQuiz() {
+            // Uncheck all radios
+            document.querySelectorAll('#quiz-container input[type="radio"]').forEach(radio => radio.checked = false);
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+
+            const statusPill = document.getElementById('quiz-status-pill');
+            statusPill.className = "px-4 py-2 rounded-2xl bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300";
+            statusPill.innerText = "Status: Ready";
+        }
+
+        // Default initial view
+        switchTab('guide');
+    </script>
+</body>
+</html>
